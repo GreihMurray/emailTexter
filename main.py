@@ -18,6 +18,12 @@ class old_messages():
         self.recipient = recipient
         self.subject = subject
 
+class texts():
+    def __init__(self, target, subject, message):
+        self.target = target
+        self.subject = subject
+        self.message = message
+
 def main():
     users = []
     held_messages = []
@@ -63,20 +69,24 @@ def main():
             print("MySQL connection is closed")
 
 
+
     for i in range(0, 15):
-        count = 0
-        for userr in users:
-            emailBody, sender, subject = emailHandler.recieve_email(userr.email, userr.email_password)
-            held_messages.append(old_messages(sender, userr, subject))
+        target, text_subject, message, fromWho = twilioHandler.recieve_messages()
 
-            if held_messages[count].sender != sender and held_messages[users.index(userr)].recipient == userr and held_messages[users.index(userr)].subject != subject:
-                print("Made it")
-                #twilioHandler.send_text(emailBody, userr.phone_number, sender, subject)
-                held_messages[users.index(userr)] = old_messages(sender, userr, subject)
+        if target != '' and text_subject != '' and message != '' and fromWho != '':
+            for userr in users:
+                if userr.phone_number == fromWho:
+                    emailHandler.send_email(target, text_subject, message, userr.email, userr.email_password)
+        # for userr in users:
+        #     emailBody , sender, subject = emailHandler.recieve_email(userr.email, userr.email_password)
+        #     held_messages.append(old_messages(sender, userr, subject))
+        #
+        #     if held_messages[users.index(userr)].sender != sender and held_messages[users.index(userr)].recipient == userr and held_messages[users.index(userr)].subject != subject:
+        #         print("Made it")
+        #         #twilioHandler.send_text(emailBody, userr.phone_number, sender, subject)
+        #         held_messages[users.index(userr)] = old_messages(sender, userr, subject)
 
-            count += 1
-
-        time.sleep(15)
+        time.sleep(5)
 
 
 if __name__ == '__main__':

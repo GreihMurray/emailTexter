@@ -1,6 +1,9 @@
 import imaplib
 import email
 from email.header import decode_header
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import webbrowser
 import os
 
@@ -16,6 +19,23 @@ class message():
 def clean(text):
     # clean text for creating a folder
     return "".join(c if c.isalnum() else "_" for c in text)
+
+def send_email(target, subject, message, username, password):
+    smtpObj = smtplib.SMTP(host='smtp-mail.outlook.com', port=587)
+    smtpObj.connect('smtp-mail.outlook.com', 587)
+    smtpObj.ehlo()
+    smtpObj.starttls()
+
+    smtpObj.login(username, password)
+
+    msg = MIMEMultipart()
+    msg['From']=username
+    msg['To']=target
+    msg['Subject']=subject
+
+    msg.attach(MIMEText(message, 'plain'))
+
+    smtpObj.send_message(msg)
 
 blank = 'blank'
 
