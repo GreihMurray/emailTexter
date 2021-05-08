@@ -50,7 +50,7 @@ def main():
             record = cursor.fetchone()
             print("You're connected to database: ", record)
 
-            query = ("SELECT * FROM userinfo")
+            query = ("SELECT username, password, email, email_password, phone_number FROM userinfo WHERE on_switch = 'on'")
             cursor.execute(query)
 
             for userIn in cursor:
@@ -70,23 +70,29 @@ def main():
 
 
 
-    for i in range(0, 15):
+    while True:
+        # Recieves texts
         target, text_subject, message, fromWho = twilioHandler.recieve_messages()
 
+        # Handles sending emails from texts
         if target != '' and text_subject != '' and message != '' and fromWho != '':
             for userr in users:
                 if userr.phone_number == fromWho:
                     emailHandler.send_email(target, text_subject, message, userr.email, userr.email_password)
-        # for userr in users:
-        #     emailBody , sender, subject = emailHandler.recieve_email(userr.email, userr.email_password)
-        #     held_messages.append(old_messages(sender, userr, subject))
-        #
-        #     if held_messages[users.index(userr)].sender != sender and held_messages[users.index(userr)].recipient == userr and held_messages[users.index(userr)].subject != subject:
-        #         print("Made it")
-        #         #twilioHandler.send_text(emailBody, userr.phone_number, sender, subject)
-        #         held_messages[users.index(userr)] = old_messages(sender, userr, subject)
 
-        time.sleep(5)
+        for userr in users:
+            # Recieves emails
+            emailBody, sender, subject = emailHandler.recieve_email(userr.email, userr.email_password)
+            held_messages.append(old_messages(sender, userr, subject))
+
+            #Sends as texts
+            if held_messages[users.index(userr)].sender != sender and held_messages[users.index(userr)].recipient == userr and held_messages[users.index(userr)].subject != subject:
+                print("Made it")
+                #twilioHandler.send_text(emailBody, userr.phone_number, sender, subject)
+                held_messages[users.index(userr)] = old_messages(sender, userr, subject)
+
+        # waits to repeat
+        time.sleep(15)
 
 
 if __name__ == '__main__':
