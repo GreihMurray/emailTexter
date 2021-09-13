@@ -9,8 +9,8 @@ class old_texts():
 
 # Your Account Sid and Auth Token from twilio.com/console
 # and set the environment variables. See http://twil.io/secure
-account_sid = 'ACcf332a2e5e360c16e7458ed2b9b5eb3b'
-auth_token = 'a7505f6652786f3da4338a4c6a7315e6'
+account_sid = 'TWILIO ACCOUNT SID'
+auth_token = 'TWILIO AUTH TOKEN'
 client = Client(account_sid, auth_token)
 
 
